@@ -95,3 +95,11 @@ section {
   border-color: #dd2929;
   background: #dd2929;
 }
+
+small.caution-message{
+  display: none;
+  color: orange;
+  font-weight: bold;
+  
+
+}

@@ -7,45 +7,39 @@ const postList = document.querySelector("ul");
 //define httprequest object
 
 const xhr = new XMLHttpRequest();
-//define sendingRequest function
 
-function sendingHttpRequest(method, url, data) {
+function sendingHttpReqeust(method, url, data) {
   const promise = new Promise((resolve, reject) => {
     xhr.open(method, url);
     xhr.responseType = "json";
-
     xhr.onload = function () {
       if (xhr.status >= 200 && xhr.status < 300) {
         resolve(xhr.response);
       } else {
-        reject(new Error("something went wrong!.."));
+        reject(new Error("Something went wrong!"));
       }
     };
     xhr.onerror = function () {
-      reject(new Error("Failed to send request !"));
+      reject(new Error("Sending request Failed!. trye again"));
     };
-    //seding request to server
     xhr.send(JSON.stringify(data));
   });
   return promise;
 }
 
-//defining fetch data function
-
 async function fetchData() {
   try {
-    const responseData = await sendingHttpRequest(
+    const responseData = await sendingHttpReqeust(
       "GET",
-      "https://jsonplaceholder.typicode.com/post"
+      "https://jsonplaceholder.typicode.com/posts"
     );
-    const listOfPosts = responseData;
-    for (const post of listOfPosts) {
-      //import template
+    const listOFPosts = responseData;
+    for (const post of listOFPosts) {
       const postEl = document.importNode(postElement.content, true);
       postEl.querySelector("h2").textContent = post.title.toUpperCase();
       postEl.querySelector("p").textContent = post.body;
       postEl.querySelector("li").id = post.id;
-      //append data to ul list element
+
       listElement.append(postEl);
     }
   } catch (error) {
@@ -53,39 +47,61 @@ async function fetchData() {
   }
 }
 
-async function createPost(title, content) {
-  //sendingHttpRequst
+//defining a click listner after fetch button is clicked
+fetchButton.addEventListener("click", fetchData);
 
+//sending requestt
+
+async function createPost(event) {
+  event.preventDefault();
+
+  const enteredTitle = event.currentTarget.querySelector("#title").value;
+  const enteredContent = event.currentTarget.querySelector("#content").value;
   const userId = Math.random();
   const post = {
-    title: title,
-    body: content,
     userId: userId,
+    title: enteredTitle,
+    body: enteredContent,
   };
-  await sendingHttpRequest(
+  sendingHttpReqeust(
     "POST",
     "https://jsonplaceholder.typicode.com/posts",
     post
   );
 }
-//fetch data after occuring click Listener
-fetchButton.addEventListener("click", fetchData);
 
-//sending dummyData to server
+let Validitiy = "pending" //user input validity
+const cautionMessage = document.querySelectorAll(".caution-message");
+const userInputs = document.querySelectorAll("input");
 form.addEventListener("submit", (event) => {
   event.preventDefault();
-  //user input data
-  const enteredTitle = event.currentTarget.querySelector("#title").value;
-  const enteredContent = event.currentTarget.querySelector("#content").value;
-  createPost(enteredTitle, enteredContent);
+  //user input validation
+  userInputs.forEach((input, index) => {
+    if (input.value === "") {
+      Validitiy = "invalid";
+      cautionMessage[index].style.display = "block";
+    } else {
+      Validitiy = "valid";
+      cautionMessage[index].style.display = "none";
+    }
+  });
+  if (Validitiy === "valid") {
+    createPost(event);
+  } else {
+    return false;
+  }
 });
 
-postList.addEventListener("click", (event) => {
+//deleting data
+function deletePost(event) {
   if (event.target.tagName === "BUTTON") {
     const postId = event.target.closest("li").id;
-    sendingHttpRequest(
+    sendingHttpReqeust(
       "DELETE",
       `https://jsonplaceholder.typicode.com/posts/${postId}`
     );
   }
+}
+postList.addEventListener("click", (event) => {
+  deletePost(event);
 });
