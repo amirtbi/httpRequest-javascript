@@ -1,1 +1,0 @@
-//handling httpRequest by JavaScript 

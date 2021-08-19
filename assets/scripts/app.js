@@ -33,6 +33,7 @@ function sendingHttpRequest(method,url,data){
 }
 
 //defining fetch data function
+
 async function fetchData(){
     try{
         const responseData = await sendingHttpRequest("GET",'https://jsonplaceholder.typicode.com/post');
