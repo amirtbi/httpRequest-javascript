@@ -1,4 +1,11 @@
-Sending Request and Getting response in Javascript
-Dummy URL
-The url for posting and getting data is 'https://jsonplaceholder.typicode.com/posts'
+# HttpRequest in Javascript
 
+
+
+### For "Get" method and "POST" method, the below url is used. 
+
+See [JSONPLACEHOLDER] 'https://jsonplaceholder.typicode.com/posts'
+
+### For "DELETE" method, the below url is used. Substitute proper id with 'id'
+
+See [JSONPLACEHOLDER]  'https://jsonplaceholder.typicode.com/posts/id'
