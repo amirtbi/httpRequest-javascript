@@ -7,33 +7,56 @@ const postList = document.querySelector("ul");
 //define httprequest object
 
 const xhr = new XMLHttpRequest();
-
+//Error handler function
+function errorHandler(response){
+  if(!response.ok){
+    throw new Error("something went wrong!");
+  }
+  return response;
+}
 function sendingHttpReqeust(method, url, data) {
-  const promise = new Promise((resolve, reject) => {
-    xhr.open(method, url);
-    xhr.responseType = "json";
-    xhr.onload = function () {
-      if (xhr.status >= 200 && xhr.status < 300) {
-        resolve(xhr.response);
-      } else {
-        reject(new Error("Something went wrong!"));
-      }
-    };
-    xhr.onerror = function () {
-      reject(new Error("Sending request Failed!. trye again"));
-    };
-    xhr.send(JSON.stringify(data));
-  });
-  return promise;
+  //using promise during XMLHttpRequst
+  // const promise = new Promise((resolve, reject) => {
+  //   xhr.open(method, url);
+  //xhr.setRequestHeader('Content-type','Application/json');
+  //   xhr.responseType = "json";
+  //   xhr.onload = function () {
+  //     if (xhr.status >= 200 && xhr.status < 300) {
+  //       resolve(xhr.response);
+  //     } else {
+  //       reject(new Error("Something went wrong!"));
+  //     }
+  //   };
+  //   xhr.onerror = function () {
+  //     reject(new Error("Sending request Failed!. trye again"));
+  //   };
+  //   xhr.send(JSON.stringify(data));
+  // });
+  // return promise;
+  //======fetchAPI=====
+  //getting method
+  return fetch(url,{
+    method:method,
+    body:JSON.stringify(data)
+  }).then(errorHandler)
+    .then(response=>{
+      console.log("response hadnler")
+    //returning response object
+        return response.json();
+  }).catch((error)=>{
+    console.log(error);
+  })
 }
 
 async function fetchData() {
-  try {
+  try{
+
     const responseData = await sendingHttpReqeust(
       "GET",
       "https://jsonplaceholder.typicode.com/posts"
     );
     const listOFPosts = responseData;
+
     for (const post of listOFPosts) {
       const postEl = document.importNode(postElement.content, true);
       postEl.querySelector("h2").textContent = post.title.toUpperCase();
@@ -42,13 +65,20 @@ async function fetchData() {
 
       listElement.append(postEl);
     }
-  } catch (error) {
-    alert(error.message);
+ 
   }
+  catch(error){
+    console.log(error);
+  }
+  
 }
 
 //defining a click listner after fetch button is clicked
-fetchButton.addEventListener("click", fetchData);
+
+
+fetchButton.addEventListener("click",fetchData);
+
+
 
 //sending requestt
 
