@@ -8,8 +8,8 @@ const postList = document.querySelector("ul");
 
 const xhr = new XMLHttpRequest();
 //Error handler function
-function errorHandler(response){
-  if(!response.ok){
+function errorHandler(response) {
+  if (!response.ok) {
     throw new Error("something went wrong!");
   }
   return response;
@@ -35,22 +35,22 @@ function sendingHttpReqeust(method, url, data) {
   // return promise;
   //======fetchAPI=====
   //getting method
-  return fetch(url,{
-    method:method,
-    body:JSON.stringify(data)
-  }).then(errorHandler)
-    .then(response=>{
-      console.log("response hadnler")
-    //returning response object
-        return response.json();
-  }).catch((error)=>{
-    console.log(error);
+  return fetch(url, {
+    method: method,
+    body:data //user when data formt is json ===> JSON.stringify(data),
   })
+    .then(errorHandler)
+    .then((response) => {
+      //returning response object
+      return response.json();
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 }
 
 async function fetchData() {
-  try{
-
+  try {
     const responseData = await sendingHttpReqeust(
       "GET",
       "https://jsonplaceholder.typicode.com/posts"
@@ -65,20 +65,14 @@ async function fetchData() {
 
       listElement.append(postEl);
     }
- 
-  }
-  catch(error){
+  } catch (error) {
     console.log(error);
   }
-  
 }
 
 //defining a click listner after fetch button is clicked
 
-
-fetchButton.addEventListener("click",fetchData);
-
-
+fetchButton.addEventListener("click", fetchData);
 
 //sending requestt
 
@@ -88,19 +82,25 @@ async function createPost(event) {
   const enteredTitle = event.currentTarget.querySelector("#title").value;
   const enteredContent = event.currentTarget.querySelector("#content").value;
   const userId = Math.random();
+  //using post while data format is json
   const post = {
     userId: userId,
     title: enteredTitle,
     body: enteredContent,
   };
+  //formData format
+  const fd = new FormData(form);
+  // fd.append("title",title);
+  // fd.append("body",enteredContent),
+  fd.append("userId",userId);
   sendingHttpReqeust(
     "POST",
     "https://jsonplaceholder.typicode.com/posts",
-    post
+    fd
   );
 }
 
-let Validitiy = "pending" //user input validity
+let Validitiy = "pending"; //user input validity
 const cautionMessage = document.querySelectorAll(".caution-message");
 const userInputs = document.querySelectorAll("input");
 form.addEventListener("submit", (event) => {
