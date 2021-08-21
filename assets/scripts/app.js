@@ -51,11 +51,15 @@ function sendingHttpReqeust(method, url, data) {
 
 async function fetchData() {
   try {
-    const responseData = await sendingHttpReqeust(
-      "GET",
-      "https://jsonplaceholder.typicode.com/posts"
-    );
-    const listOFPosts = responseData;
+    // const responseData = await sendingHttpReqeust(
+    //   "GET",
+    //   "https://jsonplaceholder.typicode.com/posts"
+    // );
+    const responseData = await axios.get('https://jsonplaceholder.typicode.com/posts')
+    console.log(responseData);
+    // const listOFPosts = responseData;
+    //using axios library
+    const listOFPosts = responseData.data;
 
     for (const post of listOFPosts) {
       const postEl = document.importNode(postElement.content, true);
@@ -93,17 +97,21 @@ async function createPost(event) {
   // fd.append("title",title);
   // fd.append("body",enteredContent),
   fd.append("userId",userId);
-  sendingHttpReqeust(
-    "POST",
-    "https://jsonplaceholder.typicode.com/posts",
-    fd
-  );
-}
+  // sendingHttpReqeust(
+  //   "POST",
+  //   "https://jsonplaceholder.typicode.com/posts",
+  //   fd
+  // );
+  //using axios library
+  const response = await axios.post('https://jsonplaceholder.typicode.com/posts',fd);
+  console.log(response)
+ 
+} 
 
 let Validitiy = "pending"; //user input validity
-const cautionMessage = document.querySelectorAll(".caution-message");
-const userInputs = document.querySelectorAll("input");
 form.addEventListener("submit", (event) => {
+  const cautionMessage = document.querySelectorAll(".caution-message");
+  const userInputs = document.querySelectorAll("input");
   event.preventDefault();
   //user input validation
   userInputs.forEach((input, index) => {
@@ -126,10 +134,12 @@ form.addEventListener("submit", (event) => {
 function deletePost(event) {
   if (event.target.tagName === "BUTTON") {
     const postId = event.target.closest("li").id;
-    sendingHttpReqeust(
-      "DELETE",
-      `https://jsonplaceholder.typicode.com/posts/${postId}`
-    );
+    // sendingHttpReqeust(
+    //   "DELETE",
+    //   `https://jsonplaceholder.typicode.com/posts/${postId}`
+    // );
+    //using axios library
+    axios.delete(`https://jsonplaceholder.typicode.com/posts/${postId}`);
   }
 }
 postList.addEventListener("click", (event) => {
